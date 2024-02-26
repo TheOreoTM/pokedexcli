@@ -9,7 +9,7 @@ func runHelp() {
 	commands := getCommands()
 
 	for _, command := range commands {
-		fmt.Printf("- %v\n", command.name)
+		fmt.Printf(" - %s: %s\n", command.name, command.description)
 	}
 
 	fmt.Println("")
