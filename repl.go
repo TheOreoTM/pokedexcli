@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func startRepl() {
+func startRepl(conf *config) {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
@@ -31,14 +31,17 @@ func startRepl() {
 			continue
 		}
 
-		command.run()
+		err := command.run(conf)
+		if err != nil {
+			fmt.Printf("Error: %s\n", err.Error())
+		}
 	}
 }
 
 type Command struct {
 	name        string
 	description string
-	run         func()
+	run         func(*config) error
 }
 
 func getCommands() map[string]Command {
@@ -52,6 +55,16 @@ func getCommands() map[string]Command {
 			name:        "exit",
 			description: "Exits the pokedex",
 			run:         runExit,
+		},
+		"map": {
+			name:        "map",
+			description: "Go forward a page in the map",
+			run:         runMap,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "Go back a page on the map",
+			run:         runMapB,
 		},
 	}
 }
