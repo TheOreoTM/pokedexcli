@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func runHelp(conf *config, args ...string) error {
 	fmt.Println("Welcome to the Pokedex help menu")
@@ -9,7 +12,8 @@ func runHelp(conf *config, args ...string) error {
 	commands := getCommands()
 
 	for _, command := range commands {
-		fmt.Printf(" - %s: %s\n", command.name, command.description)
+		prefix := fmt.Sprintf(" - %s: ", command.name)
+		fmt.Printf("%s%s\n%*sAliases: %s\n\n", prefix, command.description, len(prefix), "", strings.Join(command.aliases, ", "))
 	}
 
 	fmt.Println("")

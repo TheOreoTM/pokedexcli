@@ -1,26 +1,27 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
 
 func runPokemons(conf *config, args ...string) error {
 	if len(args) == 0 {
-		return runPokemonsForward(conf)
+		return runPokemonsNext(conf)
 	}
 
 	switch args[0] {
 	case "f":
-		return runPokemonsForward(conf, args[1:]...)
+		return runPokemonsNext(conf, args[1:]...)
 	case "b":
-		return runPokemonsBackward(conf, args[1:]...)
+		return runPokemonsPrev(conf, args[1:]...)
 	default:
-		return runPokemonsForward(conf, args...)
+		return runPokemonsNext(conf, args...)
 	}
 }
 
-func runPokemonsForward(conf *config, _ ...string) error {
+func runPokemonsNext(conf *config, _ ...string) error {
 	pokemons, err := conf.pokeapiClient.GetPokemons(conf.nextPokemonPageUrl)
 	if err != nil {
 		return err
@@ -48,9 +49,9 @@ func runPokemonsForward(conf *config, _ ...string) error {
 	return nil
 }
 
-func runPokemonsBackward(conf *config, _ ...string) error {
+func runPokemonsPrev(conf *config, _ ...string) error {
 	if conf.prevPokemonPageUrl == nil {
-		return fmt.Errorf("you're on the first page")
+		return errors.New("you're on the first page")
 	}
 
 	pokemons, err := conf.pokeapiClient.GetPokemons(conf.prevPokemonPageUrl)

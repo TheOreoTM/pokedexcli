@@ -3,26 +3,25 @@ package main
 import (
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 )
 
 func runMap(conf *config, args ...string) error {
 	if len(args) == 0 {
-		return runMapF(conf)
+		return runMapNext(conf)
 	}
 
 	switch args[0] {
 	case "f":
-		return runMapF(conf, args[1:]...)
+		return runMapNext(conf, args[1:]...)
 	case "b":
-		return runMapB(conf, args[1:]...)
+		return runMapPrev(conf, args[1:]...)
 	default:
-		return runMapF(conf, args...)
+		return runMapNext(conf, args...)
 	}
 }
 
-func runMapF(conf *config, _ ...string) error {
+func runMapNext(conf *config, _ ...string) error {
 	areas, err := conf.pokeapiClient.ListLocationAreas(conf.nextLocationAreaURL)
 	if err != nil {
 		return err
@@ -42,14 +41,14 @@ func runMapF(conf *config, _ ...string) error {
 	return nil
 }
 
-func runMapB(conf *config, _ ...string) error {
+func runMapPrev(conf *config, _ ...string) error {
 	if conf.prevLocationAreaURL == nil {
 		return errors.New("you're on the first page")
 	}
 
 	areas, err := conf.pokeapiClient.ListLocationAreas(conf.prevLocationAreaURL)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	fmt.Printf("Location areas:\n")
