@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+
+	"github.com/theoreotm/pokedexcli/internal/pokeapi"
 )
 
 func runPokemons(conf *config, args ...string) error {
@@ -17,8 +19,35 @@ func runPokemons(conf *config, args ...string) error {
 	case "b":
 		return runPokemonsPrev(conf, args[1:]...)
 	default:
-		return runPokemonsNext(conf, args...)
+		{
+			pokemon, err := conf.pokeapiClient.GetPokemon(args[0])
+			if err != nil {
+				return errors.New("pokemon not found")
+			}
+
+			return showPokemon(&pokemon)
+		}
 	}
+}
+
+func showPokemon(pokemon *pokeapi.Pokemon) error {
+	fmt.Printf("Pokemon: %s\n", pokemon.Name)
+	fmt.Printf("ID: %d\n", pokemon.ID)
+	fmt.Printf("Height: %d\n", pokemon.Height)
+	fmt.Printf("Weight: %d\n", pokemon.Weight)
+	fmt.Printf("Base Experience: %d\n", pokemon.BaseExperience)
+	fmt.Printf("Abilities:\n")
+	for _, ability := range pokemon.Abilities {
+		fmt.Printf(" - %s\n", ability.Ability.Name)
+	}
+
+	fmt.Printf("Types:\n")
+	for _, t := range pokemon.Types {
+		fmt.Printf(" - %s\n", t.Type.Name)
+	}
+
+	return nil
+
 }
 
 func runPokemonsNext(conf *config, _ ...string) error {

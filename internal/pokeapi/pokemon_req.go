@@ -16,3 +16,13 @@ func (c *Client) GetPokemons(pageUrl *string) (PokemonsResponse, error) {
 
 	return pokemons, nil
 }
+
+func (c *Client) GetPokemon(idOrName string) (Pokemon, error) {
+	pokemon := Pokemon{}
+	err := c.GetJson(baseURL+"/pokemon/"+idOrName, &pokemon)
+	if err != nil {
+		return Pokemon{}, err
+	}
+
+	return pokemon, nil
+}

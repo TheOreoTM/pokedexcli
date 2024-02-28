@@ -13,7 +13,7 @@ func runHelp(conf *config, args ...string) error {
 
 	for _, command := range commands {
 		prefix := fmt.Sprintf(" - %s: ", command.name)
-		fmt.Printf("%s%s\n%*sAliases: %s\n\n", prefix, command.description, len(prefix), "", strings.Join(command.aliases, ", "))
+		fmt.Printf("%s\n%*sAliases: %s\n\n", prefix+command.description, len(prefix), "", strings.Join(command.aliases, ", "))
 	}
 
 	fmt.Println("")

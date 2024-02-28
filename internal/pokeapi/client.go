@@ -11,6 +11,15 @@ import (
 // It returns an error if the request fails or if the response has a bad status code.
 // Additionally, it adds the response data to the cache.
 func (c *Client) GetJson(url string, v interface{}) error {
+	if data, ok := c.cache.Get(url); ok {
+		err := json.Unmarshal(data, v)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return err
