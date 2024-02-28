@@ -1,5 +1,10 @@
 package pokeapi
 
+import (
+	"encoding/json"
+	"fmt"
+)
+
 func (c *Client) GetPokemons(pageUrl *string) (PokemonsResponse, error) {
 	endpoint := "/pokemon?offset=0&limit=20"
 	fullUrl := baseURL + endpoint
@@ -22,6 +27,13 @@ func (c *Client) GetPokemon(idOrName string) (Pokemon, error) {
 	err := c.GetJson(baseURL+"/pokemon/"+idOrName, &pokemon)
 	if err != nil {
 		return Pokemon{}, err
+	}
+
+	bytes, err := json.Marshal(pokemon)
+
+	if err == nil {
+		c.cache.Add(fmt.Sprintf("%s/pokemon/%s", baseURL, pokemon.Name), bytes)
+		c.cache.Add(fmt.Sprintf("%s/pokemon/%d", baseURL, pokemon.ID), bytes)
 	}
 
 	return pokemon, nil
