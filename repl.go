@@ -65,11 +65,6 @@ func getCommands() map[string]Command {
 			description: "Go forward a page in the map",
 			run:         runMap,
 		},
-		"mapb": {
-			name:        "mapb",
-			description: "Go back a page on the map",
-			run:         runMapB,
-		},
 		"explore": {
 			name:        "explore",
 			description: "View more information about an area",
@@ -84,6 +79,11 @@ func getCommands() map[string]Command {
 			name:        "region",
 			description: "View information about a region",
 			run:         runRegion,
+		},
+		"pokemons": {
+			name:        "pokemons",
+			description: "View a list of pokemons",
+			run:         runPokemons,
 		},
 	}
 }

@@ -8,6 +8,21 @@ import (
 )
 
 func runMap(conf *config, args ...string) error {
+	if len(args) == 0 {
+		return runMapF(conf)
+	}
+
+	switch args[0] {
+	case "f":
+		return runMapF(conf, args[1:]...)
+	case "b":
+		return runMapB(conf, args[1:]...)
+	default:
+		return runMapF(conf, args...)
+	}
+}
+
+func runMapF(conf *config, _ ...string) error {
 	areas, err := conf.pokeapiClient.ListLocationAreas(conf.nextLocationAreaURL)
 	if err != nil {
 		return err
@@ -27,7 +42,7 @@ func runMap(conf *config, args ...string) error {
 	return nil
 }
 
-func runMapB(conf *config, args ...string) error {
+func runMapB(conf *config, _ ...string) error {
 	if conf.prevLocationAreaURL == nil {
 		return errors.New("you're on the first page")
 	}

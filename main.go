@@ -10,6 +10,8 @@ type config struct {
 	pokeapiClient       pokeapi.Client
 	nextLocationAreaURL *string
 	prevLocationAreaURL *string
+	nextPokemonPageUrl  *string
+	prevPokemonPageUrl  *string
 }
 
 func main() {
