@@ -4,8 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-
-	"github.com/theoreotm/pokedexcli/internal/pokeapi"
 )
 
 func runPokemons(conf *config, args ...string) error {
@@ -19,18 +17,21 @@ func runPokemons(conf *config, args ...string) error {
 	case "b":
 		return runPokemonsPrev(conf, args[1:]...)
 	default:
-		{
-			pokemon, err := conf.pokeapiClient.GetPokemon(args[0])
-			if err != nil {
-				return errors.New("pokemon not found")
-			}
-
-			return showPokemon(&pokemon)
-		}
+		return runPokemonsNext(conf, args[1:]...)
 	}
 }
 
-func showPokemon(pokemon *pokeapi.Pokemon) error {
+func runPokemon(conf *config, args ...string) error {
+	if len(args) == 0 {
+		return errors.New("you must provide a pokemon id")
+	}
+
+	pokemonID := strings.Join(args, "+")
+	pokemon, err := conf.pokeapiClient.GetPokemon(pokemonID)
+	if err != nil {
+		return err
+	}
+
 	fmt.Printf("Pokemon: %s\n", pokemon.Name)
 	fmt.Printf("ID: %d\n", pokemon.ID)
 	fmt.Printf("Height: %d\n", pokemon.Height)
@@ -72,8 +73,11 @@ func runPokemonsNext(conf *config, _ ...string) error {
 		fmt.Printf("%*s. %s\n", maxIDLength, idStr, pokemon.Name)
 	}
 
+	currentPage, totalPages := calculatePages(conf.nextPokemonPageUrl, pokemons.Count)
 	conf.prevPokemonPageUrl = pokemons.Previous
 	conf.nextPokemonPageUrl = pokemons.Next
+
+	fmt.Printf("Page %d of %d\n", currentPage, totalPages)
 
 	return nil
 }
@@ -104,8 +108,11 @@ func runPokemonsPrev(conf *config, _ ...string) error {
 		fmt.Printf("%*s. %s\n", maxIDLength, idStr, pokemon.Name)
 	}
 
+	currentPage, totalPages := calculatePages(conf.prevPokemonPageUrl, pokemons.Count)
 	conf.prevPokemonPageUrl = pokemons.Previous
 	conf.nextPokemonPageUrl = pokemons.Next
+
+	fmt.Printf("Page %d of %d\n", currentPage, totalPages)
 
 	return nil
 }

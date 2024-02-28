@@ -3,7 +3,9 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"net/url"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -64,34 +66,40 @@ func getCommands() map[string]Command {
 			run:         runExit,
 		},
 		"map": {
-			name:        "map",
+			name:        "map {f|b}",
 			description: "Go forward a page in the map",
 			aliases:     []string{"m"},
 			run:         runMap,
 		},
 		"explore": {
-			name:        "explore",
+			name:        "explore {area}",
 			description: "View more information about an area",
 			aliases:     []string{"ex", "e"},
 			run:         runExplore,
 		},
 		"location": {
-			name:        "location",
+			name:        "location {id|name}",
 			description: "View information about a location",
 			aliases:     []string{"loc", "l"},
 			run:         runLocation,
 		},
 		"region": {
-			name:        "region",
+			name:        "region {id|name}",
 			description: "View information about a region",
 			aliases:     []string{"reg", "r"},
 			run:         runRegion,
 		},
 		"pokemons": {
-			name:        "pokemons",
+			name:        "pokemons {f|b}",
 			description: "View a list of pokemons",
-			aliases:     []string{"p", "pokemon"},
+			aliases:     []string{"pok", "pp"},
 			run:         runPokemons,
+		},
+		"pokemon": {
+			name:        "pokemon {id|name}",
+			description: "View information about a pokemon",
+			aliases:     []string{"p"},
+			run:         runPokemon,
 		},
 	}
 }
@@ -100,7 +108,7 @@ func getCommand(nameOrAlias string) Command {
 	commands := getCommands()
 
 	for _, command := range commands {
-		if command.name == nameOrAlias {
+		if strings.Split(command.name, " ")[0] == nameOrAlias {
 			return command
 		}
 		for _, alias := range command.aliases {
@@ -118,4 +126,37 @@ func cleanInput(str string) []string {
 	words := strings.Fields(lowered)
 
 	return words
+}
+
+func calculatePages(nextUrl *string, totalItems int) (int, int) {
+	if nextUrl == nil {
+		return 1, (totalItems-1)/20 + 1
+	}
+
+	u, err := url.Parse(*nextUrl)
+	if err != nil {
+		return 1, (totalItems-1)/20 + 1
+	}
+
+	q := u.Query()
+	offset, err := strconv.Atoi(q.Get("offset"))
+	if err != nil {
+		offset = 0
+	}
+	limit, err := strconv.Atoi(q.Get("limit"))
+	if err != nil || limit <= 0 {
+		limit = 20
+	}
+
+	currentPage := offset / limit
+	if offset%limit != 0 {
+		currentPage++
+	}
+
+	totalPages := totalItems / limit
+	if totalItems%limit != 0 {
+		totalPages++
+	}
+
+	return currentPage + 1, totalPages
 }

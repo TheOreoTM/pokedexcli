@@ -35,8 +35,11 @@ func runMapNext(conf *config, _ ...string) error {
 		fmt.Printf("%s. %s\n", id, area.Name)
 	}
 
+	currentPage, totalPages := calculatePages(conf.nextLocationAreaURL, areas.Count)
 	conf.nextLocationAreaURL = areas.Next
 	conf.prevLocationAreaURL = areas.Previous
+
+	fmt.Printf("Page %d of %d\n", currentPage, totalPages)
 
 	return nil
 }
@@ -59,8 +62,11 @@ func runMapPrev(conf *config, _ ...string) error {
 		fmt.Printf("%s. %s\n", id, area.Name)
 	}
 
+	currentPage, totalPages := calculatePages(conf.prevLocationAreaURL, areas.Count)
 	conf.nextLocationAreaURL = areas.Next
 	conf.prevLocationAreaURL = areas.Previous
+
+	fmt.Printf("Page %d of %d\n", currentPage, totalPages)
 
 	return nil
 }

@@ -23,6 +23,10 @@ func (c *Client) GetPokemons(pageUrl *string) (PokemonsResponse, error) {
 }
 
 func (c *Client) GetPokemon(idOrName string) (Pokemon, error) {
+	if idOrName == "" {
+		return Pokemon{}, fmt.Errorf("you must provide a pokemon id")
+	}
+
 	pokemon := Pokemon{}
 	err := c.GetJson(baseURL+"/pokemon/"+idOrName, &pokemon)
 	if err != nil {
