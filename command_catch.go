@@ -33,6 +33,7 @@ func runCatch(conf *config, args ...string) error {
 		time.Sleep(1250 * time.Millisecond)
 		fmt.Printf("click... \n")
 		fmt.Printf("You caught the %s!\n", pokemon.Name)
+		conf.caughtPokemon[pokemon.ID] = pokemon
 	} else {
 		time.Sleep(500 * time.Millisecond)
 		fmt.Printf("click... ")
