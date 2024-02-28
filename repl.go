@@ -16,12 +16,16 @@ func startRepl(conf *config) {
 		scanner.Scan()
 		text := scanner.Text()
 
-		cleaned := cleanInput(text)
-		if len(cleaned) == 0 {
+		words := cleanInput(text)
+		if len(words) == 0 {
 			continue
 		}
 
-		commandName := cleaned[0]
+		commandName := words[0]
+		args := []string{}
+		if len(words) > 1 {
+			args = words[1:]
+		}
 
 		availableCommands := getCommands()
 
@@ -31,7 +35,7 @@ func startRepl(conf *config) {
 			continue
 		}
 
-		err := command.run(conf)
+		err := command.run(conf, args...)
 		if err != nil {
 			fmt.Printf("Error: %s\n", err.Error())
 		}
@@ -41,7 +45,7 @@ func startRepl(conf *config) {
 type Command struct {
 	name        string
 	description string
-	run         func(*config) error
+	run         func(*config, ...string) error
 }
 
 func getCommands() map[string]Command {
@@ -65,6 +69,21 @@ func getCommands() map[string]Command {
 			name:        "mapb",
 			description: "Go back a page on the map",
 			run:         runMapB,
+		},
+		"explore": {
+			name:        "explore",
+			description: "View more information about an area",
+			run:         runExplore,
+		},
+		"location": {
+			name:        "location",
+			description: "View information about a location",
+			run:         runLocation,
+		},
+		"region": {
+			name:        "region",
+			description: "View information about a region",
+			run:         runRegion,
 		},
 	}
 }

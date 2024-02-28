@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func runMap(conf *config) error {
+func runMap(conf *config, args ...string) error {
 	areas, err := conf.pokeapiClient.ListLocationAreas(conf.nextLocationAreaURL)
 	if err != nil {
 		return err
@@ -27,7 +27,7 @@ func runMap(conf *config) error {
 	return nil
 }
 
-func runMapB(conf *config) error {
+func runMapB(conf *config, args ...string) error {
 	if conf.prevLocationAreaURL == nil {
 		return errors.New("you're on the first page")
 	}
