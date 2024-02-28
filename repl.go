@@ -101,6 +101,12 @@ func getCommands() map[string]Command {
 			aliases:     []string{"p"},
 			run:         runPokemon,
 		},
+		"catch": {
+			name:        "catch {id|name}",
+			description: "Catch a pokemon",
+			aliases:     []string{"c"},
+			run:         runCatch,
+		},
 	}
 }
 

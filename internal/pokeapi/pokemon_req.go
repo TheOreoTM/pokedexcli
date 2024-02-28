@@ -24,7 +24,7 @@ func (c *Client) GetPokemons(pageUrl *string) (PokemonsResponse, error) {
 
 func (c *Client) GetPokemon(idOrName string) (Pokemon, error) {
 	if idOrName == "" {
-		return Pokemon{}, fmt.Errorf("you must provide a pokemon id")
+		return Pokemon{}, fmt.Errorf("you must provide a pokemon")
 	}
 
 	pokemon := Pokemon{}
